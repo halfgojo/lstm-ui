@@ -1,10 +1,5 @@
 import Papa from 'papaparse';
 
-/**
- * Parse CSV file and return structured data
- * @param {File} file - CSV file object
- * @returns {Promise<Array>} Parsed data array
- */
 export const parseCSV = (file) => {
     return new Promise((resolve, reject) => {
         Papa.parse(file, {
@@ -25,15 +20,9 @@ export const parseCSV = (file) => {
     });
 };
 
-/**
- * Calculate Delta-Resistance for battery data
- * @param {Array} data - Array of battery readings
- * @returns {Array} Data with delta_resistance calculated
- */
 export const calculateDeltaResistance = (data) => {
     if (!data || data.length === 0) return [];
 
-    // Get initial resistance (first reading)
     const initialResistance = data[0].Resistance || data[0].resistance || 0;
 
     return data.map((row, index) => {
@@ -53,11 +42,6 @@ export const calculateDeltaResistance = (data) => {
     });
 };
 
-/**
- * Validate CSV structure
- * @param {Array} data - Parsed CSV data
- * @returns {Object} Validation result
- */
 export const validateCSVStructure = (data) => {
     if (!data || data.length === 0) {
         return { valid: false, error: 'CSV file is empty' };
