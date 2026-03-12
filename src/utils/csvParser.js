@@ -32,12 +32,18 @@ export const calculateDeltaResistance = (data) => {
             ? (deltaResistance / initialResistance) * 100
             : 0;
 
+        // Map column names flexibly for the specific dataset provided
+        const soc = row.SoC || row.soc || row['SoC_%'] || row['soc_%'];
+        const temperature = row.Temperature || row.temperature || row['Temp'];
+
         return {
             ...row,
             cycle: index + 1,
             delta_resistance: deltaResistance,
             delta_resistance_percent: deltaResistancePercent,
-            initial_resistance: initialResistance
+            initial_resistance: initialResistance,
+            soc: soc,
+            temperature: temperature
         };
     });
 };
