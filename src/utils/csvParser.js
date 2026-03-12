@@ -47,18 +47,16 @@ export const validateCSVStructure = (data) => {
         return { valid: false, error: 'CSV file is empty' };
     }
 
-    const requiredFields = ['Resistance', 'Temperature', 'SoC'];
     const firstRow = data[0];
     const fields = Object.keys(firstRow).map(k => k.toLowerCase());
 
-    const missingFields = requiredFields.filter(
-        field => !fields.includes(field.toLowerCase())
-    );
+    // Only Resistance is truly required for ΔR calculation
+    const hasResistance = fields.some(f => f === 'resistance');
 
-    if (missingFields.length > 0) {
+    if (!hasResistance) {
         return {
             valid: false,
-            error: `Missing required fields: ${missingFields.join(', ')}`
+            error: 'Missing required field: Resistance. Your CSV must have a "Resistance" column.'
         };
     }
 

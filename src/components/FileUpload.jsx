@@ -77,7 +77,7 @@ export default function FileUpload({ onFileUpload, isLoading }) {
                             {isLoading ? 'Processing...' : 'Drop CSV file here or click to browse'}
                         </p>
                         <p className="text-sm text-slate-400 mt-1">
-                            CSV must contain: Resistance, Temperature, SoC
+                            CSV must contain: Resistance (Temperature, SoC optional)
                         </p>
                     </div>
                     {fileName && (
