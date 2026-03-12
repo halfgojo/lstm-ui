@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import FileUpload from '../components/FileUpload';
 import StatusCard from '../components/StatusCard';
 import MetricsCard from '../components/MetricsCard';
-import { ResistanceChart, DeltaResistanceChart } from '../components/Charts';
+import { ResistanceChart, DeltaResistanceChart, TemperatureChart } from '../components/Charts';
 import { parseCSV, calculateDeltaResistance, validateCSVStructure } from '../utils/csvParser';
 import { analyzeBatteryData } from '../services/prediction';
 import {
@@ -147,6 +147,9 @@ export default function Dashboard() {
                     <h2 className="text-2xl font-bold">Trend Analysis</h2>
                     <ResistanceChart data={batteryData} />
                     <DeltaResistanceChart data={batteryData} />
+                    {batteryData[0] && (batteryData[0].Temperature !== undefined || batteryData[0].temperature !== undefined) && (
+                        <TemperatureChart data={batteryData} />
+                    )}
                 </div>
             )}
 

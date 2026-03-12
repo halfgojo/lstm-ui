@@ -30,39 +30,45 @@ export const predictHealthStatus = (deltaResistancePercent) => {
 };
 
 export const analyzeBatteryData = (data) => {
-    if (!data || data.length === 0) {
-        return null;
-    }
-
-    const latestReading = data[data.length - 1];
-    const prediction = predictHealthStatus(latestReading.delta_resistance_percent);
-
-    const avgResistance = data.reduce((sum, row) =>
-        sum + (row.Resistance || row.resistance || 0), 0) / data.length;
-
-    const avgTemperature = data.reduce((sum, row) =>
-        sum + (row.Temperature || row.temperature || 0), 0) / data.length;
-
-    const avgSoC = data.reduce((sum, row) =>
-        sum + (row.SoC || row.soc || 0), 0) / data.length;
-
-    const maxDeltaR = Math.max(...data.map(row =>
-        Math.abs(row.delta_resistance_percent || 0)));
-
-    return {
-        prediction,
-        metrics: {
-            currentResistance: latestReading.Resistance || latestReading.resistance,
-            deltaResistance: latestReading.delta_resistance,
-            deltaResistancePercent: latestReading.delta_resistance_percent,
-            temperature: latestReading.Temperature || latestReading.temperature,
-            soc: latestReading.SoC || latestReading.soc,
-            avgResistance,
-            avgTemperature,
-            avgSoC,
-            maxDeltaR,
-            totalCycles: data.length
-        },
-        latestReading
-    };
+  if (!data || data.length === 0) {
+    return null;
+  }
+  
+  // Get latest reading
+  const latestReading = data[data.length - 1];
+  const prediction = predictHealthStatus(latestReading.delta_resistance_percent);
+  
+  // Calculate statistics only for fields that exist
+  const getAvg = (fieldName, fieldAlias) => {
+    const validRows = data.filter(r => r[fieldName] !== undefined || r[fieldAlias] !== undefined);
+    if (validRows.length === 0) return undefined;
+    
+    const sum = validRows.reduce((acc, row) => 
+      acc + (row[fieldName] || row[fieldAlias] || 0), 0);
+    return sum / validRows.length;
+  };
+  
+  const avgResistance = getAvg('Resistance', 'resistance');
+  const avgTemperature = getAvg('Temperature', 'temperature');
+  const avgSoC = getAvg('SoC', 'soc');
+  
+  const maxDeltaR = Math.max(...data.map(row => 
+    Math.abs(row.delta_resistance_percent || 0)));
+  
+  return {
+    prediction,
+    metrics: {
+      currentResistance: latestReading.Resistance || latestReading.resistance,
+      deltaResistance: latestReading.delta_resistance,
+      deltaResistancePercent: latestReading.delta_resistance_percent,
+      temperature: latestReading.Temperature || latestReading.temperature || undefined,
+      soc: latestReading.SoC || latestReading.soc || undefined,
+      avgResistance,
+      avgTemperature,
+      avgSoC,
+      maxDeltaR,
+      totalCycles: data.length
+    },
+    latestReading
+  };
 };

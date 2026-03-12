@@ -9,30 +9,34 @@ export default function MetricsCard({ metrics }) {
             value: metrics.currentResistance?.toFixed(4) || 'N/A',
             unit: 'Ω',
             icon: Activity,
-            color: 'text-blue-400'
+            color: 'text-blue-400',
+            show: true
         },
         {
             label: 'Delta Resistance',
             value: metrics.deltaResistancePercent?.toFixed(2) || 'N/A',
             unit: '%',
             icon: TrendingUp,
-            color: Math.abs(metrics.deltaResistancePercent) > 10 ? 'text-red-400' : 'text-green-400'
+            color: Math.abs(metrics.deltaResistancePercent) > 10 ? 'text-red-400' : 'text-green-400',
+            show: true
         },
         {
             label: 'State of Charge',
             value: metrics.soc?.toFixed(1) || 'N/A',
             unit: '%',
             icon: Battery,
-            color: 'text-purple-400'
+            color: 'text-purple-400',
+            show: metrics.soc !== undefined
         },
         {
             label: 'Temperature',
             value: metrics.temperature?.toFixed(1) || 'N/A',
             unit: '°C',
             icon: Thermometer,
-            color: metrics.temperature > 40 ? 'text-red-400' : 'text-cyan-400'
+            color: metrics.temperature > 40 ? 'text-red-400' : 'text-cyan-400',
+            show: metrics.temperature !== undefined
         }
-    ];
+    ].filter(item => item.show);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
